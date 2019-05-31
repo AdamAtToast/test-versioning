@@ -1,0 +1,45 @@
+buildscript {
+    configurations.classpath.resolutionStrategy.cacheChangingModulesFor 3600, 'seconds'
+    repositories {
+        maven {
+            url 'https://artifactory.eng.toasttab.com/artifactory/libs-snapshot'
+        }
+        maven {
+            url 'https://artifactory.eng.toasttab.com/artifactory/libs-release'
+        }
+    }
+    dependencies {
+        classpath('com.toasttab.gradle:toast-gradle:2.0.6') {
+        }
+        classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.2'
+    }
+}
+
+apply plugin: 'toast-database-suffix'
+apply plugin: 'org.sonarqube'
+
+allprojects {
+    group = 'com.toasttab.service'
+
+    version = '80-SNAPSHOT'
+}
+
+subprojects  {
+    apply plugin: 'toast-java'
+    apply plugin: 'toast-maven'
+    apply plugin: 'toast-artifactory'
+
+    project.dependencyManagement {
+        imports {
+            mavenBom 'com.toasttab.service:bom:103.3.0'
+        }
+    }
+
+    tasks.withType(Javadoc).all { enabled = false }
+
+    afterEvaluate {
+        if (version.endsWith("-SNAPSHOT")) {
+            project.tasks.publish.enabled = false
+        }
+    }
+}
