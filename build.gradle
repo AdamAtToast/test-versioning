@@ -21,7 +21,7 @@ apply plugin: 'org.sonarqube'
 allprojects {
     group = 'com.toasttab.service'
 
-    version = '80-SNAPSHOT'
+    version = '81'
 }
 
 subprojects  {
