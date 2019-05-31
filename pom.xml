@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.toasttab.service</groupId>
+        <artifactId>toast-services-buildall</artifactId>
+        <version>21.0.1</version>
+    </parent>
+
+    <!-- Follow these instructions to live a happy life free of frustration.
+         1. Leave on SNAPSHOT until you are ready to do a release.
+         2. After making version changes in this file run this command to update everything.
+            mvn -N org.codehaus.mojo:versions-maven-plugin:2.3:update-child-modules -DgenerateBackupPoms=false
+     -->
+
+    <groupId>com.toasttab.service</groupId>
+    <artifactId>toast-ccprocessing</artifactId>
+    <version>358-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        <toast.services.directory>../toast-services</toast.services.directory>
+        <toast-ccprocessing-secure.version>192</toast-ccprocessing-secure.version>
+        <toast-ccfile-processing.version>35</toast-ccfile-processing.version>
+        <toast-capital-version>26</toast-capital-version>
+        <toast-ccconfig-version>8</toast-ccconfig-version>
+        <guice.version>4.1.0</guice.version>
+    </properties>
+
+    <modules>
+        <module>toast-ccprocessing-api</module>
+        <module>toast-ccprocessing-client</module>
+        <module>toast-ccprocessing-common</module>
+        <module>toast-ccprocessing-application</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+           <dependency>
+                <groupId>com.toasttab.service</groupId>
+                <artifactId>bom</artifactId>
+                <version>104.5.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+ 
+
+    <profiles>
+        <!-- This is intended for jenkins -->
+        <profile>
+            <id>find_toast_services_directory_from_env_TOAST_SERVICES_DIR</id>
+            <activation>
+                <property>
+                    <name>env.TOAST_SERVICES_DIR</name>
+                </property>
+            </activation>
+            <properties>
+                <toast.services.directory>${env.TOAST_SERVICES_DIR}</toast.services.directory>
+            </properties>
+        </profile>
+
+        <!-- Only run the check dependency updates nothing else for testing -->
+        <profile>
+            <id>only_check_dependency_updates</id>
+            <properties>
+                <skipTests>true</skipTests>
+            </properties>
+            <build>
+                <defaultGoal>validate</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.4.0</version>
+                        <executions>
+                            <execution>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <executable>${toast.services.directory}/check_dependency_updates/check_dependency_updates.sh</executable>
+                            <arguments>
+                                <argument>check</argument>
+                                <argument>.</argument>
+                            </arguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Use this profile to run as part of an all inclusive integration-test build. jenkins -->
+        <profile>
+            <id>check_dependency_updates</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.4.0</version>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <executable>${toast.services.directory}/check_dependency_updates/check_dependency_updates.sh</executable>
+                            <arguments>
+                                <argument>check</argument>
+                                <argument>.</argument>
+                            </arguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+ 
+</project>
