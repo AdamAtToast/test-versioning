@@ -17,7 +17,7 @@
 
     <groupId>com.toasttab.service</groupId>
     <artifactId>toast-ccprocessing</artifactId>
-    <version>358-SNAPSHOT</version>
+    <version>358</version>
     <packaging>pom</packaging>
 
     <properties>
