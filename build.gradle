@@ -19,7 +19,7 @@ apply plugin: "org.sonarqube"
 
 allprojects {
   group = 'com.toasttab.service'
-  version = '381'
+  version = '381-SNAPSHOT'
 }
 subprojects  {
     apply plugin: 'toast-java'
